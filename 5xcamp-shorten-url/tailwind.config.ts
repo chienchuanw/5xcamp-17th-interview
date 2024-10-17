@@ -11,6 +11,12 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "primary-gray": "#EDEDED",
+      },
+      fontSize: {
+        "web-title": "14px",
+        "web-note": "12px",
+        "web-button": "10px",
       },
     },
   },

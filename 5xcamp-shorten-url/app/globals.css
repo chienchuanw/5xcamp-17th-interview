@@ -25,3 +25,25 @@ body {
     text-wrap: balance;
   }
 }
+
+/* component: Homepage */
+
+.title {
+  @apply text-web-title font-medium py-1 pl-1 text-slate-600;
+}
+
+.note {
+  @apply text-web-note py-1 pl-1 font-medium text-slate-600;
+}
+
+.button {
+  @apply text-web-button bg-black text-white px-2 py-[2px];
+}
+
+.input-field {
+  @apply border-[1.75px] border-gray-200 rounded-sm px-3 py-1 text-web-note placeholder-gray-400;
+}
+
+.container {
+  @apply px-4 py-2;
+}
