@@ -1,11 +1,10 @@
 "use client";
 
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { faCloudDownloadAlt } from "@fortawesome/free-solid-svg-icons";
-
-import { useState } from "react";
+import { z, ZodError } from "zod";
 
 interface FormData {
   fullLink: string;
@@ -14,6 +13,17 @@ interface FormData {
   activate: boolean;
 }
 
+// Zod Validation for entering a URL
+const urlSchema = z.string().url("Please enter a valid URL");
+
+// Zod Validation for custom short URL
+const shortUrlSchema = z
+  .string()
+  .url("Please enter a valid URL")
+  .refine((val) => val.startsWith("https://chuan.w/"), {
+    message: "The short URL must start with http://chuan.w/",
+  });
+
 const Homepage = () => {
   const [fullLink, setFullLink] = useState<string>("");
   const [shortLink, setShortLink] = useState<string>("");
@@ -21,6 +31,8 @@ const Homepage = () => {
   const [activate, setActivate] = useState<boolean>(false);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [transitionClass, setTransitionClass] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [shortUrlError, setShortUrlError] = useState<string | null>(null);
 
   // handle copy event when clicking copy icon in frontend
   const handleCopy = () => {
@@ -40,6 +52,18 @@ const Homepage = () => {
 
   const handleBlur = async () => {
     if (!fullLink) return;
+
+    try {
+      urlSchema.parse(fullLink);
+      setError(null);
+    } catch (e) {
+      if (e instanceof ZodError) {
+        setError(e.errors[0]?.message);
+      } else {
+        setError("Unknown error occurred");
+      }
+      return;
+    }
 
     try {
       const res = await fetch("api/check-url", {
@@ -63,6 +87,19 @@ const Homepage = () => {
     }
   };
 
+  const handleShortLinkBlur = () => {
+    try {
+      shortUrlSchema.parse(shortLink);
+      setShortUrlError(null);
+    } catch (e) {
+      if (e instanceof ZodError) {
+        setShortUrlError(e.errors[0]?.message);
+      } else {
+        setShortUrlError("Unknown error occurred.");
+      }
+    }
+  };
+
   // handle submit event when pushing "Get Page Info" button in frontend
   const handleGetPageInfo = async () => {
     if (!fullLink) {
@@ -80,7 +117,7 @@ const Homepage = () => {
 
       const data = await res.json();
       if (res.ok) {
-        setNote(`Title: ${data.title}\nDate: ${data.headers["date"]}`);
+        setNote(`Date: ${data.headers["date"]}\nTitle: ${data.title}`);
         // alert(`成功獲取 ${data.title} 頁面資訊`);
       } else {
         alert(`錯誤： ${data.message}`);
@@ -123,7 +160,7 @@ const Homepage = () => {
 
   return (
     <section className="w-[640px] mx-auto mt-10 pt-5 pb-4 border-b-2">
-      <div className="container flex gap-2 mx-auto">
+      <div className="container flex gap-2 mx-auto h-[120px]">
         <div>
           <label htmlFor="fullLink" className="title block">
             連結
@@ -139,6 +176,7 @@ const Homepage = () => {
             onBlur={handleBlur}
             required
           />
+          {error && <p className="text-red-500 text-xs pl-3 pt-1">{error}</p>}
         </div>
         <div>
           <label htmlFor="shortLink" className="title block">
@@ -151,7 +189,9 @@ const Homepage = () => {
               id="shortLink"
               className="input-field w-[200px] h-[40px] text-black"
               value={shortLink}
+              placeholder="可自行填寫，或是自動產生"
               onChange={(e) => setShortLink(e.target.value)}
+              onBlur={handleShortLinkBlur}
             />
             <button
               className="absolute inset-y-0 right-0 px-4 flex items-center"
@@ -165,11 +205,13 @@ const Homepage = () => {
               />
             </button>
           </div>
-          <p className="note">可自行填寫，或是自動產生</p>
+          {shortUrlError && (
+            <p className="text-red-500 text-xs pl-3 pt-1">{shortUrlError}</p>
+          )}
         </div>
       </div>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto mt-10">
         <div className="mb-3">
           <div className="flex items-center">
             <label htmlFor="note" className="title block mr-2">
