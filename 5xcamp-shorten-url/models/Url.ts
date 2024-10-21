@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { nanoid } from "nanoid";
 
 const UrlSchema = new mongoose.Schema({
   fullUrl: {
@@ -10,10 +9,9 @@ const UrlSchema = new mongoose.Schema({
   shortUrl: {
     type: String,
     unique: true,
-    default: function () {
-      // create a short url in 6 character with specific domain
-      return `https://chienchuanw/${nanoid(6)}`;
-    },
+  },
+  note: {
+    type: String,
   },
   activate: {
     type: Boolean,
