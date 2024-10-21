@@ -41,7 +41,7 @@ body {
 }
 
 .input-field {
-  @apply border-[1.75px] border-gray-200 rounded-sm px-3 py-1 text-web-note placeholder-gray-400;
+  @apply border-[1.75px] border-gray-200 rounded-sm px-3 py-2 text-web-note placeholder-gray-400;
 }
 
 .container {
