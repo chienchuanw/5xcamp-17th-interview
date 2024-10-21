@@ -32,7 +32,9 @@ export default async function handler(
 
         res.status(201).json({ success: true, data: newUrl });
       } catch (error) {
-        res.status(400).json({ success: false, message: error.message });
+        res
+          .status(400)
+          .json({ success: false, message: (error as Error).message });
       }
       break;
 
