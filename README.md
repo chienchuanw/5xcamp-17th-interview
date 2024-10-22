@@ -2,7 +2,7 @@
 
 這是一個使用 **Next.js**、**MongoDB** 和 **Mongoose** 打造的 URL 縮址服務，並使用 **TailwindCSS** 進行網站樣式設計、**Zod** 進行資料驗證。
 
-若想實際操作網站，可造訪[部署連結](https://5xcamp-17th-interview.vercel.app/)
+若想實際操作網站，可造訪[部署連結](https://5xcamp-17th-interview.vercel.app/)自行使用。
 
 ## 功能特色
 
@@ -17,39 +17,39 @@
 
 專案基於 Next.js 預設的專案結構，並定義了自訂的 API 路由來處理縮址邏輯。使用 **Mongoose** 與 **MongoDB** 進行數據交互，並透過 **Zod** 進行資料的驗證。
 
-```console
+```plaintext
 .
-├── README.md               # 專案說明文件
-├── app                     # Next.js 應用的主要部分
+├── README.md                 # 專案說明文件
+├── app                       # Next.js 應用的主要部分
 │   ├── Homepage
-│   │   └── page.tsx        # 首頁頁面
+│   │   └── page.tsx          # 首頁頁面
 │   ├── favicon.ico
 │   ├── fonts
 │   │   ├── GeistMonoVF.woff
 │   │   └── GeistVF.woff
-│   ├── globals.css         # 全域樣式檔
-│   ├── layout.tsx          # 佈局元件
-│   └── page.tsx            # 預設首頁
+│   ├── globals.css           # 全域樣式檔
+│   ├── layout.tsx            # 佈局元件
+│   └── page.tsx              # 預設首頁
 ├── models
-│   └── Url.ts              # URL 資料模型
+│   └── Url.ts                # URL 資料模型
 ├── next-env.d.ts
 ├── next.config.mjs
 ├── package-lock.json
 ├── package.json
-├── pages                   # API 路由與動態頁面
-│   ├── [shortUrl].ts       # 動態短網址重定向處理
+├── pages                     # API 路由與動態頁面
+│   ├── [shortUrl].ts         # 動態短網址重定向處理
 │   └── api
-│       ├── check-url.ts    # 檢查網址 API
-│       ├── get-page-info.ts# 獲取頁面信息 API
-│       └── urls.ts         # 用於處理短網址的 API
+│       ├── check-url.ts      # 檢查網址 API
+│       ├── get-page-info.ts  # 獲取頁面信息 API
+│       └── urls.ts           # 用於處理短網址的 API
 ├── postcss.config.mjs
 ├── tailwind.config.js
 ├── tsconfig.json
-├── types                   # TypeScript 型別定義
+├── types                     # TypeScript 型別定義
 │   ├── global.d.ts
 │   └── tailwindcss.d.ts
 └── utils
-    └── dbConnect.ts        # MongoDB 連接實用函數
+    └── dbConnect.ts          # MongoDB 連接實用函數
 ```
 
 ## 技術棧
@@ -72,8 +72,8 @@
 1. **克隆專案**：
 
    ```bash
-   git clone https://github.com/your-username/5xcamp-shorten-url.git
-   cd 5xcamp-shorten-url
+   git clone git@github.com:chienchuanw/5xcamp-17th-interview.git
+   cd 5xcamp-17th-interview/5xcamp-shorten-url
    ```
 
 2. **安裝相依套件**：
