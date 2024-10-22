@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -17,9 +16,9 @@ const config: Config = {
         "web-title": "14px",
         "web-note": "12px",
         "web-button": "10px",
-      },
+      }
     },
   },
   plugins: [],
-};
-export default config;
+}
+
