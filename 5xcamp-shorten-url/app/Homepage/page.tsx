@@ -264,7 +264,7 @@ const Homepage = () => {
             onChange={handleActiveChange}
           />
           <label htmlFor="activate" className="title">
-            是否啟用
+            是否啟用（勾選以啟用短網址）
           </label>
         </div>
       </div>
