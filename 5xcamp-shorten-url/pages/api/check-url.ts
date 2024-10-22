@@ -1,4 +1,4 @@
-import Url from "@/models/Url";
+import Url, { UrlProps } from "@/models/Url";
 import dbConnect from "@/utils/dbConnect";
 import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -17,7 +17,9 @@ export default async function handler(
 
   try {
     // checking whether fullLink is already existed in database
-    const existingUrl = await Url.findOne({ fullUrl: fullLink });
+    const existingUrl = (await Url.findOne({
+      fullUrl: fullLink,
+    }).lean()) as UrlProps | null;
 
     // return the existing shortUrl or generate a new one
     if (existingUrl) {
@@ -42,8 +44,7 @@ export default async function handler(
       return res
         .status(500)
         .json({ message: "Cannot query or generate short url" });
-    } else {
-      return res.status(500).json({ message: "Unknown error occurred." });
     }
+    return res.status(500).json({ message: "Unknown error occurred." });
   }
 }

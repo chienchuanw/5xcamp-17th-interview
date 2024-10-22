@@ -13,10 +13,8 @@ interface FormData {
   activate: boolean;
 }
 
-// Zod Validation for entering a URL
 const urlSchema = z.string().url("Please enter a valid URL");
 
-// Zod Validation for custom short URL
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/";
 const shortUrlSchema = z
   .string()
@@ -35,27 +33,11 @@ const Homepage = () => {
   const [error, setError] = useState<string | null>(null);
   const [shortUrlError, setShortUrlError] = useState<string | null>(null);
 
-  // handle copy event when clicking copy icon in frontend
-  const handleCopy = () => {
-    if (!shortLink) {
-      // nothing happens if there is no short link
-      return;
-    }
-    navigator.clipboard.writeText(shortLink);
-    setIsCopied(true);
-    setTransitionClass("");
-
-    setTimeout(() => {
-      setIsCopied(false);
-      setTransitionClass("transition-all duration-1000");
-    }, 1000);
-  };
-
-  const handleBlur = async () => {
-    if (!fullLink) return;
+  const fetchUrlInfo = async (link: string) => {
+    if (!link) return;
 
     try {
-      urlSchema.parse(fullLink);
+      urlSchema.parse(link);
       setError(null);
     } catch (e) {
       if (e instanceof ZodError) {
@@ -70,7 +52,7 @@ const Homepage = () => {
       const res = await fetch("api/check-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullLink }),
+        body: JSON.stringify({ fullLink: link }),
       });
 
       const data = await res.json();
@@ -83,7 +65,7 @@ const Homepage = () => {
           setActivate(data.activate);
         }
       } else {
-        alert(`error message: ${data.message}`);
+        alert(`Error: ${data.message}`);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -92,6 +74,12 @@ const Homepage = () => {
         alert("Unknown error occurred.");
       }
     }
+  };
+
+  const handleFullLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const link = e.target.value;
+    setFullLink(link);
+    fetchUrlInfo(link);
   };
 
   const handleShortLinkBlur = () => {
@@ -107,46 +95,44 @@ const Homepage = () => {
     }
   };
 
-  // handle submit event when pushing "Get Page Info" button in frontend
-  const handleGetPageInfo = async () => {
-    if (!fullLink) {
-      return;
-    }
+  const handleCopy = () => {
+    if (!shortLink) return;
+    navigator.clipboard.writeText(shortLink);
+    setIsCopied(true);
+    setTransitionClass("");
+    setTimeout(() => {
+      setIsCopied(false);
+      setTransitionClass("transition-all duration-1000");
+    }, 1000);
+  };
 
+  const handleGetPageInfo = async () => {
+    if (!fullLink) return;
     try {
       const res = await fetch("api/get-page-info", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: fullLink }),
       });
-
       const data = await res.json();
       if (res.ok) {
         setNote(`Title: ${data.title}\nDescription: ${data.description}`);
-        // alert(`成功獲取 ${data.title} 頁面資訊`);
       } else {
         alert(`Error: ${data.message}`);
       }
     } catch (error) {
       if (error instanceof Error) {
-        alert("Cannot not get page info.");
+        alert("Cannot get page info.");
       } else {
         alert("Unknown error occurred.");
       }
     }
   };
 
-  // handle submit event when toggling the "active" checkbox in frontend
   const handleActiveChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const newActivate = e.target.checked;
     setActivate(newActivate);
-
-    // Strip BASE_URL from shortURL before sending to backend
     const formattedShortLink = shortLink.replace(`${BASE_URL}`, "");
-
-    // create form data which will be sent to backend later
     const formData: FormData = {
       fullLink,
       shortLink: formattedShortLink,
@@ -157,9 +143,7 @@ const Homepage = () => {
     try {
       const res = await fetch("/api/urls", {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -186,8 +170,7 @@ const Homepage = () => {
             placeholder="請輸入或貼上完整的網址"
             className="input-field w-[400px] h-[40px] text-black"
             value={fullLink}
-            onChange={(e) => setFullLink(e.target.value)}
-            onBlur={handleBlur}
+            onChange={handleFullLinkChange} // 使用 onChange 而非 onBlur
             required
           />
           {error && <p className="text-red-500 text-xs pl-3 pt-1">{error}</p>}
@@ -236,7 +219,7 @@ const Homepage = () => {
               type="button"
               onClick={handleGetPageInfo}
             >
-              <FontAwesomeIcon icon={faCloudDownloadAlt} className="mr-2" />
+              <FontAwesomeIcon icon={faCloudDownloadAlt} className="mr-2" />{" "}
               取得頁面資訊
             </button>
           </div>
@@ -246,7 +229,7 @@ const Homepage = () => {
             className="input-field block w-full h-[70px] text-black"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-          ></textarea>
+          />
         </div>
         <div className="flex items-center">
           <input
