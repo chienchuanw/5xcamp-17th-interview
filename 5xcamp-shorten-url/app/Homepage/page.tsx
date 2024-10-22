@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import { faCloudDownloadAlt } from "@fortawesome/free-solid-svg-icons";
 import { z, ZodError } from "zod";
+import Loading from "./Loading";
 
 interface FormData {
   fullLink: string;
@@ -32,6 +33,8 @@ const Homepage = () => {
   const [transitionClass, setTransitionClass] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [shortUrlError, setShortUrlError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [noteFetching, setNoteFetching] = useState<boolean>(false);
 
   const fetchUrlInfo = async (link: string) => {
     if (!link) return;
@@ -49,6 +52,8 @@ const Homepage = () => {
     }
 
     try {
+      setIsLoading(true);
+
       const res = await fetch("api/check-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -73,6 +78,8 @@ const Homepage = () => {
       } else {
         alert("Unknown error occurred.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,6 +116,8 @@ const Homepage = () => {
   const handleGetPageInfo = async () => {
     if (!fullLink) return;
     try {
+      setNoteFetching(true);
+
       const res = await fetch("api/get-page-info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -126,6 +135,8 @@ const Homepage = () => {
       } else {
         alert("Unknown error occurred.");
       }
+    } finally {
+      setNoteFetching(false);
     }
   };
 
@@ -180,13 +191,18 @@ const Homepage = () => {
             短網址
           </label>
           <div className="relative flex items-center">
+            {isLoading && (
+              <div className="absolute left-3">
+                <Loading />
+              </div>
+            )}
             <input
               type="text"
               name="shortLink"
               id="shortLink"
               className="input-field w-[200px] h-[40px] text-black"
               value={shortLink}
-              placeholder="可自行填寫，或是自動產生"
+              placeholder={isLoading ? "" : "可自行填寫，或是自動產生"}
               onChange={(e) => setShortLink(e.target.value)}
               onBlur={handleShortLinkBlur}
             />
@@ -197,7 +213,7 @@ const Homepage = () => {
               <FontAwesomeIcon
                 icon={faCopy}
                 className={`text-lg bg-white ${
-                  isCopied ? "text-red-600" : "text-slate-500"
+                  isCopied ? "text-blue-600" : "text-slate-500"
                 } ${transitionClass}`}
               />
             </button>
@@ -223,13 +239,20 @@ const Homepage = () => {
               取得頁面資訊
             </button>
           </div>
-          <textarea
-            name="note"
-            id="note"
-            className="input-field block w-full h-[70px] text-black"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-          />
+          <div className="relative">
+            {noteFetching && (
+              <div className="absolute left-2 top-2">
+                <Loading />
+              </div>
+            )}
+            <textarea
+              name="note"
+              id="note"
+              className="input-field block w-full h-[70px] text-black"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </div>
         </div>
         <div className="flex items-center">
           <input
