@@ -76,10 +76,10 @@ const Homepage = () => {
       const data = await res.json();
       if (res.ok) {
         if (data.shortUrl) {
-          setShortLink(data.shortUrl);
+          setShortLink(`${BASE_URL}${data.shortUrl}`);
           setActivate(data.activate);
         } else {
-          setShortLink(data.generatedShortUrl);
+          setShortLink(`${BASE_URL}${data.generatedShortUrl}`);
           setActivate(data.activate);
         }
       } else {
@@ -143,10 +143,13 @@ const Homepage = () => {
     const newActivate = e.target.checked;
     setActivate(newActivate);
 
+    // Strip BASE_URL from shortURL before sending to backend
+    const formattedShortLink = shortLink.replace(`${BASE_URL}`, "");
+
     // create form data which will be sent to backend later
     const formData: FormData = {
       fullLink,
-      shortLink,
+      shortLink: formattedShortLink,
       note,
       activate: newActivate,
     };

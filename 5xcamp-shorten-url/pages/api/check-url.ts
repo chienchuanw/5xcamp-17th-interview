@@ -29,7 +29,7 @@ export default async function handler(
         note: existingUrl.note,
       });
     } else {
-      const generatedShortUrl = `${BASE_URL}${nanoid(6)}`;
+      const generatedShortUrl = `${nanoid(6)}`;
       const newUrl = new Url({
         fullUrl: fullLink,
         shortUrl: generatedShortUrl,
