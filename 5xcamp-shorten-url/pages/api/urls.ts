@@ -8,38 +8,51 @@ export default async function handler(
 ) {
   await dbConnect();
 
-  switch (req.method) {
-    case "GET":
-      try {
-        const urls = await Url.find({});
-        res.status(200).json({ success: true, data: urls });
-      } catch (error) {
-        res.status(400).json({ success: false });
+  const { fullLink, shortLink, note, activate } = req.body;
+
+  if (!fullLink) {
+    return res.status(400).json({ message: "Please provide an URL." });
+  }
+
+  try {
+    if (req.method === "PATCH") {
+      const updatedUrl = await Url.findOneAndUpdate(
+        { fullUrl: fullLink },
+        { activate, shortUrl: shortLink, note: note },
+        { new: true }
+      );
+      if (!updatedUrl) {
+        return res.status(404).json({ message: "URL not found." });
       }
-      break;
 
-    case "POST":
-      try {
-        const { fullUrl, shortUrl, activate } = req.body;
+      return res.status(200).json({ success: true, updatedUrl });
+    } else if (req.method == "POST") {
+      const existingURL = await Url.findOne({ fullUrl: fullLink });
 
+      if (existingURL) {
+        return res.status(200).json({ shortUrl: existingURL.shortUrl });
+      } else {
         const newUrl = new Url({
-          fullUrl: fullUrl,
-          shortUrl: shortUrl || undefined,
+          fullUrl: fullLink,
+          shortUrl: shortLink,
           activate: !!activate,
         });
-
         await newUrl.save();
-
-        res.status(201).json({ success: true, data: newUrl });
-      } catch (error) {
-        res
-          .status(400)
-          .json({ success: false, message: (error as Error).message });
+        return res.status(201).json({ success: true, newUrl });
       }
-      break;
-
-    default:
-      res.status(400).json({ success: false });
-      break;
+    } else {
+      res.setHeader("Allow", ["PATCH", "POST"]);
+      return res
+        .status(405)
+        .json({ message: `Method ${req.method} not allowed` });
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return res
+        .status(500)
+        .json({ message: "Cannot process the request", error: error.message });
+    } else {
+      return res.status(500).json({ message: "Unknown error occurred." });
+    }
   }
 }

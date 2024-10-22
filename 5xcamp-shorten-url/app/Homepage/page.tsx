@@ -76,14 +76,20 @@ const Homepage = () => {
       if (res.ok) {
         if (data.shortUrl) {
           setShortLink(data.shortUrl);
+          setActivate(data.activate);
         } else {
           setShortLink(data.generatedShortUrl);
+          setActivate(data.activate);
         }
       } else {
         alert(`error message: ${data.message}`);
       }
     } catch (error) {
-      alert("Cannot query or generate short URL.");
+      if (error instanceof Error) {
+        alert("Cannot query or generate short URL.");
+      } else {
+        alert("Unknown error occurred.");
+      }
     }
   };
 
@@ -117,13 +123,17 @@ const Homepage = () => {
 
       const data = await res.json();
       if (res.ok) {
-        setNote(`Date: ${data.headers["date"]}\nTitle: ${data.title}`);
+        setNote(`Title: ${data.title}\nDescription: ${data.description}`);
         // alert(`成功獲取 ${data.title} 頁面資訊`);
       } else {
-        alert(`錯誤： ${data.message}`);
+        alert(`Error: ${data.message}`);
       }
     } catch (error) {
-      alert("無法取得頁面資訊");
+      if (error instanceof Error) {
+        alert("Cannot not get page info.");
+      } else {
+        alert("Unknown error occurred.");
+      }
     }
   };
 
