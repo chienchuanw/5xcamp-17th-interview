@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const globalAny: any = global;
+
 // connect MongoDB with URL environment variable
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -9,10 +12,10 @@ if (!MONGODB_URI) {
   );
 }
 
-let cached = global.mongoose;
+let cached = globalAny.mongoose;
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = globalAny.mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {

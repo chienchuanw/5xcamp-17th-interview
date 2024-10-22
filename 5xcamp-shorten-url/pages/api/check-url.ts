@@ -3,8 +3,6 @@ import dbConnect from "@/utils/dbConnect";
 import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/";
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
