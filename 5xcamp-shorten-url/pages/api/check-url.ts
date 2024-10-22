@@ -3,6 +3,8 @@ import dbConnect from "@/utils/dbConnect";
 import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/";
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -27,7 +29,7 @@ export default async function handler(
         note: existingUrl.note,
       });
     } else {
-      const generatedShortUrl = `https://chuan.w/${nanoid(6)}`;
+      const generatedShortUrl = `${BASE_URL}${nanoid(6)}`;
       const newUrl = new Url({
         fullUrl: fullLink,
         shortUrl: generatedShortUrl,

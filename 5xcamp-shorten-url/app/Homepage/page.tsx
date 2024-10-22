@@ -17,11 +17,12 @@ interface FormData {
 const urlSchema = z.string().url("Please enter a valid URL");
 
 // Zod Validation for custom short URL
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/";
 const shortUrlSchema = z
   .string()
   .url("Please enter a valid URL")
-  .refine((val) => val.startsWith("https://chuan.w/"), {
-    message: "The short URL must start with http://chuan.w/",
+  .refine((val) => val.startsWith(`${BASE_URL}`), {
+    message: `The short URL must start with ${BASE_URL}`,
   });
 
 const Homepage = () => {
