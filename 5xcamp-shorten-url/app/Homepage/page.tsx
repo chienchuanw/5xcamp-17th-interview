@@ -196,7 +196,7 @@ const Homepage = () => {
             >
               <FontAwesomeIcon
                 icon={faCopy}
-                className={`text-lg ${
+                className={`text-lg bg-white ${
                   isCopied ? "text-red-600" : "text-slate-500"
                 } ${transitionClass}`}
               />

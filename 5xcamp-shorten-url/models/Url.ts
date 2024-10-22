@@ -1,24 +1,15 @@
-import { Schema, model, models } from "mongoose";
+import mongoose from "mongoose";
 
-export interface UrlProps {
-  fullUrl: string;
-  shortUrl: string;
-  activate: boolean;
-  note?: string;
-}
-
-const UrlSchema = new Schema<UrlProps>({
+const UrlSchema = new mongoose.Schema({
   fullUrl: {
     type: String,
     required: [true, "Please provide a valid url"],
     unique: true,
-    index: true,
   },
   shortUrl: {
     type: String,
     unique: true,
     required: true,
-    index: true,
   },
   note: {
     type: String,
@@ -29,4 +20,4 @@ const UrlSchema = new Schema<UrlProps>({
   },
 });
 
-export default models.Url || model<UrlProps>("Url", UrlSchema);
+export default mongoose.models.Url || mongoose.model("Url", UrlSchema);
