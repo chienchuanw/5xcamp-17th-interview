@@ -4,8 +4,8 @@ import { nanoid } from "nanoid";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
+  req: NextApiRequest, // request from frontend
+  res: NextApiResponse // respond will send back to frontend
 ) {
   await dbConnect();
 

@@ -14,9 +14,11 @@ interface FormData {
   activate: boolean;
 }
 
-const urlSchema = z.string().url("Please enter a valid URL");
-
+// configure domain with a default address
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/";
+
+// use zod for URL validation
+const urlSchema = z.string().url("Please enter a valid URL");
 const shortUrlSchema = z
   .string()
   .url("Please enter a valid URL")
@@ -181,7 +183,7 @@ const Homepage = () => {
             placeholder="請輸入或貼上完整的網址"
             className="input-field w-[400px] h-[40px] text-black"
             value={fullLink}
-            onChange={handleFullLinkChange} // 使用 onChange 而非 onBlur
+            onChange={handleFullLinkChange}
             required
           />
           {error && <p className="text-red-500 text-xs pl-3 pt-1">{error}</p>}
@@ -203,7 +205,7 @@ const Homepage = () => {
               className="input-field w-[200px] h-[40px] text-black"
               value={shortLink}
               placeholder={isLoading ? "" : "可自行填寫，或是自動產生"}
-              onChange={(e) => setShortLink(e.target.value)}
+              onChange={(e) => setShortLink(e.target.value)} // This will update input value to ShortLink simultaneously
               onBlur={handleShortLinkBlur}
             />
             <button

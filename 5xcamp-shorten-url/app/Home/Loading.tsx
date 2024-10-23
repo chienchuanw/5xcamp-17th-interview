@@ -1,6 +1,7 @@
 import React from "react";
 import { LoaderCircle } from "lucide-react";
 
+// This is a loading spinner component
 const Loading = () => {
   return (
     <div className="flex items-center">

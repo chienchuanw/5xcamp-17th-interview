@@ -22,6 +22,7 @@
 ├── README.md                 # 專案說明文件
 ├── app                       # Next.js 應用的主要部分
 │   ├── Homepage
+│   │   ├── Loading.tsx       # 頁面等候動畫組建
 │   │   └── page.tsx          # 首頁頁面
 │   ├── favicon.ico
 │   ├── fonts

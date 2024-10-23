@@ -2,10 +2,12 @@ import dbConnect from "@/utils/dbConnect";
 import { NextApiRequest, NextApiResponse } from "next";
 import Url from "@/models/Url";
 
+// 'export default' can be placed at the bottom of this file as well
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Connect to database
   await dbConnect();
 
   const { fullLink, shortLink, note, activate } = req.body;
@@ -16,6 +18,7 @@ export default async function handler(
 
   try {
     if (req.method === "PATCH") {
+      // Update existing url
       const updatedUrl = await Url.findOneAndUpdate(
         { fullUrl: fullLink },
         { activate, shortUrl: shortLink, note: note },
@@ -26,22 +29,9 @@ export default async function handler(
       }
 
       return res.status(200).json({ success: true, updatedUrl });
-    } else if (req.method == "POST") {
-      const existingURL = await Url.findOne({ fullUrl: fullLink });
-
-      if (existingURL) {
-        return res.status(200).json({ shortUrl: existingURL.shortUrl });
-      } else {
-        const newUrl = new Url({
-          fullUrl: fullLink,
-          shortUrl: shortLink,
-          activate: !!activate,
-        });
-        await newUrl.save();
-        return res.status(201).json({ success: true, newUrl });
-      }
     } else {
-      res.setHeader("Allow", ["PATCH", "POST"]);
+      // Inform that this api only allows PATCH method
+      res.setHeader("Allow", ["PATCH"]);
       return res
         .status(405)
         .json({ message: `Method ${req.method} not allowed` });
